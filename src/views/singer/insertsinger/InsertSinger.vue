@@ -1,0 +1,255 @@
+<template>
+  <div>
+    <div class=" inputform">
+      <div class="singer-content">
+        <div class="inputinfo name">
+          <span class="span span-name">
+            <p>姓名</p>
+            <p v-show="isactive">此项为必填项</p>
+          </span>
+          <!-- <span v-show="isactive">姓名不能空</span> -->
+          <el-input v-model="singer.singername"
+                    placeholder="姓名"
+                    @blur="blurchange"
+                    @focus="getfocus"></el-input>
+        </div>
+        <div class="inputinfo sex">
+          <span class="span">性别</span>
+          <el-select v-model="singer.sex"
+                     placeholder="请选择">
+            <el-option v-for="item in options"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="inputinfo uploadimg">
+          <span class="span">图片上传</span>
+          <button class="upload"
+                  @click="uploadimg">
+            <img :src="singer.pic"
+                 alt=""
+                 v-if="changeimg">
+            <el-image v-else>
+              <div slot="error"
+                   class="image-slot slot-text">
+                <i class="el-icon-plus avatar-uploader-icon"></i>
+                <span>点击上传图片</span>
+              </div>
+            </el-image>
+          </button>
+          <input ref="filElem"
+                 type="file"
+                 style='display:none'
+                 @change="getFile">
+        </div>
+        <div class="inputinfo address">
+          <span class="span">地址</span>
+          <el-input v-model="singer.location"
+                    placeholder="地址"></el-input>
+        </div>
+        <div class="inputinfo block">
+          <span class="demonstration span">出生日期</span>
+          <el-date-picker v-model="singer.birth"
+                          type="date"
+                          placeholder="选择日期">
+          </el-date-picker>
+        </div>
+        <div class="inputinfo introduction">
+          <span class="span">简介</span>
+          <el-input type="textarea"
+                    :rows="5"
+                    placeholder="请输入内容"
+                    v-model="singer.introduction">
+          </el-input>
+        </div>
+        <div class="inputinfo button">
+          <el-button plain
+                     @click="goback()">取消</el-button>
+          <el-button type="primary"
+                     plain
+                     @click="uploadsingerinfo()">确认修改</el-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  inject: ['reload'],
+  data() {
+    return {
+      options: [
+        {
+          value: '男',
+          label: '男',
+        },
+        {
+          value: '女',
+          label: '女',
+        },
+      ],
+      isactive: false,
+      show: false,
+      singer: {
+        introduction: '',
+        location: '',
+        pic: '',
+        sex: null,
+        birth: '',
+        singername: '',
+      },
+    }
+  },
+  computed: {
+    changeimg() {
+      // console.log(this.show)
+      return this.show
+    },
+  },
+  methods: {
+    getfocus() {
+      this.isactive = false
+    },
+    blurchange(event) {
+      console.log(event.currentTarget.value == '')
+      this.isactive = event.currentTarget.value == '' ? true : false
+    },
+    uploadimg() {
+      this.$refs.filElem.dispatchEvent(new MouseEvent('click'))
+    },
+    getFile() {
+      var that = this
+      const inputFile = this.$refs.filElem.files[0]
+      // console.log(inputFile.name)
+      if (inputFile) {
+        if (inputFile.type !== 'image/jpeg' && inputFile.type !== 'image/png') {
+          alert('不是有效的图片文件！')
+          return
+        }
+        const reader = new FileReader()
+        reader.readAsDataURL(inputFile)
+        reader.onload = function (e) {
+          that.show = true
+          // console.log(e.currentTarget.result)
+          that.singer.pic = e.currentTarget.result
+          // console.log(
+          //   (that.singer.pic = e.currentTarget.result),
+          //   inputFile.name
+          // )
+          // base64_image_content(e.currentTarget.result, inputFile.name)
+        }
+      }
+    },
+    uploadsingerinfo() {
+      const singer = this.singer
+      singer.sex = singer.sex == '男' ? 1 : 0
+      if (singer.singername !== '') {
+        this.$api
+          .insertSinger({
+            id: singer.id,
+            singername: singer.singername,
+            sex: singer.sex,
+            pic: singer.pic,
+            birth: singer.birth,
+            location: singer.location,
+            introduction: singer.introduction,
+          })
+          .then((res) => {
+            this.$message({
+              message: '添加成功',
+              type: 'success',
+            })
+            this.$router.go(0)
+          })
+          .catch((err) => {
+            this.$message.error('添加失败')
+            console.log(err)
+          })
+      } else {
+        this.$message.error('姓名不能为空')
+      }
+    },
+    goback() {
+      this.$router.push('/singer')
+    },
+  },
+}
+</script>
+
+<style>
+.inputform {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.singer-content {
+  width: 100%;
+  height: 100%;
+  /* background-color: aqua; */
+}
+
+.inputinfo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.singer-content .block {
+  margin-left: 0;
+}
+.block span {
+  text-align: start;
+}
+.inputinfo .span {
+  margin: 1rem 0;
+  font-size: 1.2rem;
+}
+.span-name {
+  display: flex;
+  flex-direction: row;
+}
+.span-name p:nth-child(2) {
+  margin: 0 3rem;
+  color: red;
+}
+.upload {
+  width: 15rem;
+  height: 15rem;
+  /* background-color: #d9d9d9; */
+  border: 0.1rem dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.upload img {
+  border-radius: 6px;
+  width: 100%;
+  height: 100%;
+}
+.button {
+  width: 100%;
+  height: 4rem;
+  margin: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.button .el-button {
+  margin: 0 5rem;
+}
+.slot-text {
+  display: flex;
+  flex-direction: column;
+  color: rgb(150, 147, 147);
+}
+.slot-text i {
+  font-size: 4rem;
+}
+.slot-text span {
+  padding-top: 2rem;
+}
+</style>
