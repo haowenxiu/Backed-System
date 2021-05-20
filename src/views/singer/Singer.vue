@@ -77,7 +77,7 @@ export default {
     onload() {
       this.$api.singerList({ pn: this.pn }).then((res) => {
         const info = res.data.extend.info
-        console.log(info)
+        // console.log(info)
         this.pagesize = info.pagesize
         this.total = info.total
         this.currentPage = info.pageNum

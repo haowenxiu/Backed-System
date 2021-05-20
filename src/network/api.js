@@ -50,6 +50,10 @@ const download = (p) => get("/singer/download", p);
 const deletesinger = (p) => get("/admin/deletesinger", p);
 const updateSinger = (p) => post("/admin/updatesinger", p);
 const insertSinger = (p) => post("/admin/insertsinger", p);
+const getAllSong = (p) => get("/admin/allsong", p);
+const deleteSong = (p) => get("/admin/deletesong", p);
+const getsinger = (p) => get("/admin/getsinger", p);
+const insertsong = (p) => post("/admin/insertsong",p);
 
 export default {
   login,
@@ -71,4 +75,8 @@ export default {
   deletesinger,
   updateSinger,
   insertSinger,
+  getAllSong,
+  deleteSong,
+  getsinger,
+  insertsong,
 };

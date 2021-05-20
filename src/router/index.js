@@ -26,6 +26,14 @@ const routes = [
     path: "/insertsinger",
     component: () => import("../views/singer/insertsinger/InsertSinger.vue"),
   },
+  {
+    path: "/updatesong/:item",
+    component: () => import("../views/song/updatesong/UpdateSong.vue"),
+  },
+  {
+    path: "/insertsong",
+    component: () => import("../views/song/insertsong/InsertSong.vue"),
+  },
 ];
 
 const router = new VueRouter({
