@@ -4,34 +4,23 @@
       <div class="singer-content">
         <div class="inputinfo name">
           <span class="span span-name">
-            <p>歌曲名称</p>
+            <p>图片名字</p>
             <p v-show="isactive">此项为必填项</p>
           </span>
           <!-- <span v-show="isactive">姓名不能空</span> -->
-          <el-input v-model="song.songname"
-                    placeholder="歌曲名称"
-                    @blur="blurchange"
-                    @focus="getfocus"></el-input>
-        </div>
-        <div class="inputinfo name">
-          <span class="span span-name">
-            <p>歌曲所在专辑</p>
-            <p v-show="isactive">此项为必填项</p>
-          </span>
-          <!-- <span v-show="isactive">姓名不能空</span> -->
-          <el-input v-model="song.collection"
-                    placeholder="专辑名称"
+          <el-input v-model="banner.name"
+                    placeholder="图片名字"
                     @blur="blurchange"
                     @focus="getfocus"></el-input>
         </div>
         <div class="inputinfo sex">
-          <span class="span">歌手</span>
-          <el-select v-model="song.singerid"
+          <span class="span">歌曲</span>
+          <el-select v-model="banner.songid"
                      placeholder="请选择">
             <el-option v-for="item in options"
                        :key="item.value"
-                       :label="item.singername"
-                       :value="item.id">
+                       :label="item.songname"
+                       :value="item.songnum">
             </el-option>
           </el-select>
         </div>
@@ -39,7 +28,7 @@
           <span class="span">图片上传</span>
           <button class="upload"
                   @click="uploadimg">
-            <img :src="song.pic"
+            <img :src="banner.bannerpic"
                  alt=""
                  v-if="changeimg">
             <el-image v-else>
@@ -55,33 +44,6 @@
                  style='display:none'
                  @change="getFile">
         </div>
-        <div class="inputinfo block">
-          <span class="span">上传音频</span>
-          <div class="audioupload">
-            <el-button round
-                       @click="uploadaudio">点击上传</el-button>
-            <span>{{audiopath}}</span>
-          </div>
-          <input ref="fileaudio"
-                 type="file"
-                 style='display:none'
-                 @change="getaudio">
-        </div>
-        <div class="inputinfo block">
-          <span class="demonstration span">发行日期</span>
-          <el-date-picker v-model="song.createtime"
-                          type="date"
-                          placeholder="选择日期">
-          </el-date-picker>
-        </div>
-        <div class="inputinfo introduction">
-          <span class="span">歌词</span>
-          <el-input type="textarea"
-                    :rows="5"
-                    placeholder="请输入内容"
-                    v-model="song.lyric">
-          </el-input>
-        </div>
         <div class="inputinfo button">
           <el-button plain
                      @click="goback()">取消</el-button>
@@ -96,28 +58,20 @@
 
 <script>
 export default {
-  inject: ['reload'],
-  created() {
+  mounted() {
     this.onload()
   },
   data() {
     return {
       options: [],
       isactive: false,
-      show: true,
-      audiopath: '',
-      song: {
-        songnum: '',
-        songname: '',
-        singerid: '',
-        pic: '',
-        collection: '',
-        createtime: '',
-        updatetime: '',
-        lyric: '',
-        songurl: '',
+      show: false,
+      song: [],
+      banner: {
+        name: '',
+        songid: '',
+        bannerpic: '',
       },
-      songpathname: '',
     }
   },
   computed: {
@@ -128,52 +82,34 @@ export default {
   },
   methods: {
     uploadsingerinfo() {
-      const song = this.song
-      console.log(song)
-
-      // console.log(this.songpathname)
-      if (song.songurl !== '') {
-        this.$api
-          .updatetsong({
-            songnum: song.songnum,
-            songname: song.songname,
-            singerid: song.singerid,
-            pic: song.pic,
-            collection: song.collection,
-            createtime: song.createtime,
-            lyric: song.lyric,
-            songurl: song.songurl,
-            updatetime: song.updatetime,
-            singername: this.songpathname,
+      console.log(this.banner)
+      this.$api
+        .alertbanner({
+          name: this.banner.name,
+          bannerpic: this.banner.bannerpic,
+          songid: this.banner.songid,
+        })
+        .then((res) => {
+          this.$message({
+            message: '添加成功',
+            type: 'success',
           })
-          .then((res) => {
-            this.$message({
-              message: '添加成功',
-              type: 'success',
-            })
-            // this.$router.go(0)
-          })
-          .catch((err) => {
-            this.$message.error('添加失败')
-            console.log(err)
-          })
-      } else {
-        this.$message.error('姓名不能为空')
-      }
+          this.$router.go(0)
+        })
+        .catch((err) => {
+          this.$message.error('添加失败')
+          console.log(err)
+        })
     },
     onload() {
-      this.song = JSON.parse(this.$route.params.item)
-      console.log(this.song)
-      this.audiopath = this.song.songurl
-      this.$api.getsinger().then((res) => {
+      this.$api.allsongbysonglist().then((res) => {
         const info = res.data.extend.info
-        console.log(res.data.extend.info)
+        console.log(info)
         this.options = info
         info.forEach((item) => {
-          this.options.value = item.id
-          this.options.label = item.singername
+          this.options.value = item.songnum
+          this.options.label = item.songname
         })
-        console.log(this.options)
       })
     },
     getfocus() {
@@ -200,37 +136,13 @@ export default {
         reader.onload = function (e) {
           that.show = true
           // console.log(e.currentTarget.result)
-          that.song.pic = e.currentTarget.result
+          that.banner.bannerpic = e.currentTarget.result
           // console.log(
           //   (that.singer.pic = e.currentTarget.result),
           //   inputFile.name
           // )
           // base64_image_content(e.currentTarget.result, inputFile.name)
         }
-      }
-    },
-    uploadaudio() {
-      this.$refs.fileaudio.dispatchEvent(new MouseEvent('click'))
-    },
-    getaudio() {
-      var that = this
-      // console.log(this.$refs.fileaudio.files[0])
-      const inputFile = this.$refs.fileaudio.files[0]
-      this.songpathname = inputFile.name
-      // this.song.songname = inputFile.name
-      if (inputFile) {
-        if (inputFile.type == 'audio/mpeg') {
-          this.audiopath = inputFile.name
-        } else {
-          this.$message.error('请上传MP3格式的文件')
-        }
-      }
-      const reader = new FileReader()
-      reader.readAsDataURL(inputFile)
-      reader.onload = function (e) {
-        // console.log(e.currentTarget.result)
-        // that.show = true
-        that.song.songurl = e.currentTarget.result
       }
     },
 
@@ -278,7 +190,7 @@ export default {
   color: red;
 }
 .upload {
-  width: 15rem;
+  width: 35rem;
   height: 15rem;
   /* background-color: #d9d9d9; */
   border: 0.1rem dashed #d9d9d9;

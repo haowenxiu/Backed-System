@@ -34,6 +34,24 @@ const routes = [
     path: "/insertsong",
     component: () => import("../views/song/insertsong/InsertSong.vue"),
   },
+  {
+    path: "/insertsonglist",
+    component: () =>
+      import("../views/songlist/insertsonglist/InsertSongList.vue"),
+  },
+  {
+    path: "/updatesonglist/:item",
+    component: () =>
+      import("../views/songlist/updatesonglist/UpdateSongList.vue"),
+  },
+  {
+    path: "/insertbanner",
+    component: () => import("../views/banners/insertbanner/InsertBanner.vue"),
+  },
+  {
+    path: "/updatebanner/:item",
+    component: () => import("../views/banners/updatebanner/UpdateBanner.vue"),
+  },
 ];
 
 const router = new VueRouter({

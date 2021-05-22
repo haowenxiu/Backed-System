@@ -50,10 +50,22 @@ const download = (p) => get("/singer/download", p);
 const deletesinger = (p) => get("/admin/deletesinger", p);
 const updateSinger = (p) => post("/admin/updatesinger", p);
 const insertSinger = (p) => post("/admin/insertsinger", p);
+
 const getAllSong = (p) => get("/admin/allsong", p);
 const deleteSong = (p) => get("/admin/deletesong", p);
 const getsinger = (p) => get("/admin/getsinger", p);
-const insertsong = (p) => post("/admin/insertsong",p);
+const insertsong = (p) => post("/admin/insertsong", p);
+const updatetsong = (p) => post("/admin/updatetsong", p);
+
+const allsongbysonglist = () => get("/admin/allsongbysonglist");
+const insertsonglist = (p) => post("/admin/insertsonglist", p);
+const deletesonglist = (p) => get("/admin/deletesonglist", p);
+const getsongbysonglistid = (p) => get("/admin/getsongbysonglistid", p);
+const updatesonglist = (p) => post("/admin/updatesonglist", p);
+
+const alertbanner = (p) => post("/admin/alertbanner", p);
+const deletebanner = (p) => get("/admin/deletebanner", p);
+const updatebanner = (p) => post("/admin/updatebanner", p);
 
 export default {
   login,
@@ -79,4 +91,13 @@ export default {
   deleteSong,
   getsinger,
   insertsong,
+  updatetsong,
+  allsongbysonglist,
+  insertsonglist,
+  deletesonglist,
+  getsongbysonglistid,
+  updatesonglist,
+  alertbanner,
+  deletebanner,
+  updatebanner,
 };

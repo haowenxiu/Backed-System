@@ -152,7 +152,7 @@ export default {
 }
 .tablesong tr th {
   width: 6rem;
-  background-color: #ff0;
+  /* background-color: #ff0; */
 }
 .tablesong tr th:nth-child(8) {
   /* width: 25rem; */
@@ -161,9 +161,9 @@ export default {
 .tablesong tr th:last-child {
   width: 10rem;
 }
-.tablesong tr td {
+/* .tablesong tr td {
   background-color: #f0f;
-}
+} */
 .tablesong td img {
   width: 5rem;
   height: 5rem;
