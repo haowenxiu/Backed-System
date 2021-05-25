@@ -67,6 +67,8 @@ const alertbanner = (p) => post("/admin/alertbanner", p);
 const deletebanner = (p) => get("/admin/deletebanner", p);
 const updatebanner = (p) => post("/admin/updatebanner", p);
 
+const adminlogin = (p) => get("/admin/login", p);
+
 export default {
   login,
   register,
@@ -100,4 +102,5 @@ export default {
   alertbanner,
   deletebanner,
   updatebanner,
+  adminlogin,
 };
